@@ -30,7 +30,10 @@ describe Capistrano::SharedConfig::Tasks do
       end
 
       specify "shared_config_path" do
-        @configuration.should_receive(:set).with(:shared_config_path, "#{@configuration.shared_path}/config")
+        @configuration.should_receive(:set) do |attribute, &block|
+          attribute.should == :shared_config_path
+          block.call.should == "#{@configuration.shared_path}/config"
+        end
         Capistrano::SharedConfig::Tasks.load_into(@configuration)
       end
 

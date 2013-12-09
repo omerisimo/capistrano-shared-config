@@ -7,7 +7,7 @@ module Capistrano
     class Tasks
       def self.load_into(capistrano_config)
         capistrano_config.load do
-          set :shared_config_path, File.join(shared_path, "config") unless exists?(:shared_config_path)
+          set(:shared_config_path) { File.join(shared_path, "config") } unless exists?(:shared_config_path)
           set :config_template_path, "./config/deploy/templates" unless exists?(:config_template_path)
           set :shared_config_files, [] unless exists?(:shared_config_files)
           
