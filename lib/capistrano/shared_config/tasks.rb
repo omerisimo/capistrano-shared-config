@@ -13,7 +13,7 @@ module Capistrano
           set(:shared_config_role_filter) {
             {
               roles: fetch(:shared_config_roles, :app),
-              only: fetch(:shared_config__roles_options, {}),
+              only: fetch(:shared_config_roles_options, {}),
               on_no_matching_servers: :continue
             }
           }
