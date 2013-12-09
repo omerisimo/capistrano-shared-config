@@ -45,17 +45,6 @@ describe Capistrano::SharedConfig::Tasks do
         @configuration.should_receive(:set).with(:shared_config_files, [])
         Capistrano::SharedConfig::Tasks.load_into(@configuration)
       end
-
-      specify  "shared_config_role_filter" do
-        @configuration.should_receive(:set).with(:shared_config_role_filter) do |&block|
-          block.call.should == {
-            roles: :app,
-            only: {},
-            on_no_matching_servers: :continue
-          }
-        end
-        Capistrano::SharedConfig::Tasks.load_into(@configuration)
-      end
     end
   end
 
@@ -104,6 +93,30 @@ describe Capistrano::SharedConfig::Tasks do
 
         subject.should have_run("ln -nfs #{subject.shared_config_path}/database.yml")
         subject.should have_run("ln -nfs #{subject.shared_config_path}/settings.yml")
+      end
+    end
+  end
+
+  describe  "#shared_config_roles_filter" do
+    context "with default options" do
+      it "returns the default roles filter options" do
+        subject.shared_config_roles_filter.should == {
+          roles: :app,
+          only: {},
+          on_no_matching_servers: :continue
+        }
+      end
+    end
+
+    context "with custom options" do
+      it "returns the custom roles filter options" do
+        subject.set(:shared_config_roles, [:role1, :role2])
+        subject.set(:shared_config_roles_options, {option1: :value1})
+        subject.shared_config_roles_filter.should == {
+          roles: [:role1, :role2],
+          only: {option1: :value1},
+          on_no_matching_servers: :continue
+        }
       end
     end
   end
