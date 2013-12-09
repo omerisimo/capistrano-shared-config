@@ -26,12 +26,11 @@ describe Capistrano::SharedConfig::Tasks do
 
     describe "sets default values to" do
       before do
-        @configuration.stub(:set).and_return
+        @configuration.stub(:set)
       end
 
       specify "shared_config_path" do
-        @configuration.should_receive(:set) do |attribute, &block|
-          attribute.should == :shared_config_path
+        @configuration.should_receive(:set).with(:shared_config_path) do |&block|
           block.call.should == "#{@configuration.shared_path}/config"
         end
         Capistrano::SharedConfig::Tasks.load_into(@configuration)
@@ -44,6 +43,17 @@ describe Capistrano::SharedConfig::Tasks do
 
       specify "shared_config_files" do
         @configuration.should_receive(:set).with(:shared_config_files, [])
+        Capistrano::SharedConfig::Tasks.load_into(@configuration)
+      end
+
+      specify  "shared_config_role_options" do
+        @configuration.should_receive(:set).with(:shared_config_role_options) do |&block|
+          block.call.should == {
+            roles: :app,
+            only: {},
+            on_no_matching_servers: :continue
+          }
+        end
         Capistrano::SharedConfig::Tasks.load_into(@configuration)
       end
     end
@@ -81,10 +91,10 @@ describe Capistrano::SharedConfig::Tasks do
       end
 
       it "puts the evaluated config file in the :shared_config_path" do
-        subject.should_receive(:put).with("evaluated file", "#{subject.shared_config_path}/database.yml")
-        subject.should_receive(:put).with("evaluated file", "#{subject.shared_config_path}/settings.yml")
-
         subject.find_and_execute_task("shared_config:setup")
+
+        subject.should have_put("evaluated file").to("#{subject.shared_config_path}/database.yml")
+        subject.should have_put("evaluated file").to("#{subject.shared_config_path}/settings.yml")
       end
     end
 
