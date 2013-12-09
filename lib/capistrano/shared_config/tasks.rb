@@ -42,6 +42,5 @@ module Capistrano
   end
 end
 
-if Capistrano::Configuration.instance
-  Capistrano::SharedConfig::Tasks.load_into(Capistrano::Configuration.instance)
-end
+
+Capistrano::SharedConfig::Tasks.load_into(Capistrano::Configuration.instance) if Capistrano::Configuration.instance
