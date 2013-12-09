@@ -46,8 +46,8 @@ describe Capistrano::SharedConfig::Tasks do
         Capistrano::SharedConfig::Tasks.load_into(@configuration)
       end
 
-      specify  "shared_config_role_options" do
-        @configuration.should_receive(:set).with(:shared_config_role_options) do |&block|
+      specify  "shared_config_role_filter" do
+        @configuration.should_receive(:set).with(:shared_config_role_filter) do |&block|
           block.call.should == {
             roles: :app,
             only: {},
