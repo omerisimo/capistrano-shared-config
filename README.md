@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/omerisimo/capistrano-shared-config.png?branch=master)](https://travis-ci.org/omerisimo/capistrano-shared-config)
+[![Coverage Status](https://coveralls.io/repos/omerisimo/capistrano-shared-config/badge.png?branch=master)](https://coveralls.io/r/omerisimo/capistrano-shared-config?branch=master)
+
 capistrano-shared-config
 ========================
 
