@@ -5,6 +5,7 @@ describe Capistrano::SharedConfig::Tasks do
     @configuration = Capistrano::Configuration.new
     @configuration.extend(Capistrano::Spec::ConfigurationExtension)
     @configuration.set(:shared_path, "./shared")
+    @configuration.set(:current_path, "./current")
   end
 
   subject do
@@ -91,8 +92,8 @@ describe Capistrano::SharedConfig::Tasks do
       it "runs a symlink command for each of the files defined by :shared_config_files" do
         subject.find_and_execute_task("shared_config:symlink_files")
 
-        subject.should have_run("ln -nfs #{subject.shared_config_path}/database.yml")
-        subject.should have_run("ln -nfs #{subject.shared_config_path}/settings.yml")
+        subject.should have_run("ln -nfs #{subject.shared_config_path}/database.yml #{subject.current_path}/config/database.yml")
+        subject.should have_run("ln -nfs #{subject.shared_config_path}/settings.yml #{subject.current_path}/config/settings.yml")
       end
     end
   end

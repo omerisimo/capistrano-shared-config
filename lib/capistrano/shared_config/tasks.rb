@@ -23,7 +23,7 @@ module Capistrano
             desc 'Symlink the configuration files in shared/config to the current/config directory'
             task :symlink_files do
               shared_config_files.each do |file|
-                run "ln -nfs #{shared_config_path}/#{file}", shared_config_roles_filter
+                run "ln -nfs #{File.join(shared_config_path, file)} #{File.join(current_path, "config", file)}", shared_config_roles_filter
               end
             end
             after "deploy:finalize_update", "shared_config:symlink_files"
