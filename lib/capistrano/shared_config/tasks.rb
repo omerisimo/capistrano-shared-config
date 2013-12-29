@@ -11,6 +11,8 @@ module Capistrano
         Capistrano::SharedConfig::Tasks.declare_methods capistrano_config
       end
 
+      private
+
       def self.declare_variables(capistrano_config)
         capistrano_config.load do
           set(:shared_config_path) { File.join(shared_path, "config") } unless exists?(:shared_config_path)
@@ -20,6 +22,11 @@ module Capistrano
       end
 
       def self.declare_tasks(capistrano_config)
+        Capistrano::SharedConfig::Tasks.declare_task_setup capistrano_config
+        Capistrano::SharedConfig::Tasks.declare_task_symlink_files capistrano_config
+      end
+
+      def self.declare_task_setup(capistrano_config)
         capistrano_config.load do
           namespace :shared_config do
             desc 'Create and copy configuration files to the shared/config directory'
@@ -29,7 +36,13 @@ module Capistrano
                 put ERB.new(File.read("#{config_template_path}/#{file}.erb")).result(binding), "#{shared_config_path}/#{file}", shared_config_roles_filter
               end
             end
+          end
+        end
+      end
 
+      def self.declare_task_symlink_files(capistrano_config)
+        capistrano_config.load do
+          namespace :shared_config do
             desc 'Symlink the configuration files in shared/config to the current/config directory'
             task :symlink_files do
               shared_config_files.each do |file|
