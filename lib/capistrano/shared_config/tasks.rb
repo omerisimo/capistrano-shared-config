@@ -6,11 +6,21 @@ module Capistrano
   module SharedConfig
     class Tasks
       def self.load_into(capistrano_config)
+        Capistrano::SharedConfig::Tasks.declare_variables capistrano_config
+        Capistrano::SharedConfig::Tasks.declare_tasks capistrano_config
+        Capistrano::SharedConfig::Tasks.declare_methods capistrano_config
+      end
+
+      def self.declare_variables(capistrano_config)
         capistrano_config.load do
           set(:shared_config_path) { File.join(shared_path, "config") } unless exists?(:shared_config_path)
           set :config_template_path, "./config/deploy/templates" unless exists?(:config_template_path)
           set :shared_config_files, [] unless exists?(:shared_config_files)
-          
+        end
+      end
+
+      def self.declare_tasks(capistrano_config)
+        capistrano_config.load do
           namespace :shared_config do
             desc 'Create and copy configuration files to the shared/config directory'
             task :setup do
@@ -28,7 +38,11 @@ module Capistrano
             end
             after "deploy:finalize_update", "shared_config:symlink_files"
           end
+        end
+      end
 
+      def self.declare_methods(capistrano_config)
+        capistrano_config.load do
           def shared_config_roles_filter
             {
               roles: fetch(:shared_config_roles, :app),
